@@ -1,14 +1,32 @@
-from flask import Flask
+import mysql.connector
 
-app = Flask(__name__)
+mydb = mysql.connector.connect(
+  host="localhost",
+  user="root",
+  password="12345678",
+  database="mydatabase"
+)
 
-@app.route("/")
-def home():
-    return "est"
+mycursor = mydb.cursor()
 
-@app.route("/ata")
-def test():
-    return "test"
+sql = "INSERT INTO customers (name, address) VALUES (%s, %s)"
+val = [
+  ('Peter', 'Lowstreet 4'),
+  ('Amy', 'Apple st 652'),
+  ('Hannah', 'Mountain 21'),
+  ('Michael', 'Valley 345'),
+  ('Sandy', 'Ocean blvd 2'),
+  ('Betty', 'Green Grass 1'),
+  ('Richard', 'Sky st 331'),
+  ('Susan', 'One way 98'),
+  ('Vicky', 'Yellow Garden 2'),
+  ('Ben', 'Park Lane 38'),
+  ('William', 'Central st 954'),
+  ('Chuck', 'Main Road 989'),
+  ('Viola', 'Sideway 1633')
+]
+mycursor.executemany(sql, val)
 
-if __name__ == '__main__':
-    app.run()
+mydb.commit()
+
+print(mycursor.rowcount, "record inserted.")
